@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/button"
+    android:weightSum="10"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        >
+
+
+    <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/imageView"
+    android:background="@drawable/image_round"
+    />
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/moviename"
+            android:text="영화 이름"
+            android:textColor="#0C0C0C"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:layout_gravity="center"
+            android:layout_margin="2dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:textSize="12sp"
+            android:id="@+id/openDt"
+            android:layout_gravity="center"
+            android:text="2019-06-09"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/director"
+            android:layout_margin="2dp"
+            android:textSize="12sp"
+            android:layout_gravity="center"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="false"
+                android:layout_margin="2dp"
+                android:numStars="5"
+                android:rating="3"
+                android:id="@+id/ratingbar"
+                android:stepSize="0.1"
+                android:max="10"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/rating"
+                />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
