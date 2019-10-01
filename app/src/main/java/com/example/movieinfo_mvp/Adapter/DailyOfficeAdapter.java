@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
     private Context context;
     private List<RecyclerViewModel> recyclerViewModels = null;
     private RecyclerViewModel recyclerViewModel;
+    private String audi;
+    private DecimalFormat decimalFormat = new DecimalFormat("###,###");
 
     public DailyOfficeAdapter(Context context){
         this.recyclerViewModels = new ArrayList<>();
@@ -67,9 +70,9 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         recyclerViewModel = recyclerViewModels.get(position);
         holder.movieName.setText(recyclerViewModel.getMovieNm());
         String open = recyclerViewModel.getOpenDt().substring(5,recyclerViewModel.getOpenDt().length());
-        String audi = recyclerViewModel.getAudiAcc();
+        audi = recyclerViewModel.getAudiAcc();
         open = open.replace("-","/");
-        holder.openDt.setText(open + " 개봉 (" + audi + ")");
+        holder.openDt.setText(open + " 개봉 (" + decimalFormat.format(Integer.parseInt(audi)) + "명)");
         holder.director.setText(recyclerViewModel.getDirector().replace("|"," ") + "감독");
         float rating = Float.parseFloat(recyclerViewModel.getUserRating())/2;
 

@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private ActionBar actionBar;
     private TextView textView;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
     private Date time;
@@ -27,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setCustomView();
         setContentView(R.layout.activity_main);
         setCustomActionBar();
         time = new Date();
@@ -68,5 +66,4 @@ public class MainActivity extends AppCompatActivity {
         View view = actionBar.getCustomView();
         textView = view.findViewById(R.id.movieDt);
    }
-
 }
