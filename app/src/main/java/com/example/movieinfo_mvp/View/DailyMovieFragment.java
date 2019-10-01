@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,13 +51,16 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
     private FloatingActionButton floatingActionButton;
     private int mYear, mMonth, mDay;
     private TextView textView;
-    private Button btn;
+    //private Button btn;
     private String dateSet;
     private RecyclerView recyclerView;
     private BoxOfficeService boxOfficeService;
     private ProgressBar progressBar;
     private DailyOfficeAdapter dailyOfficeAdapter;
-    private LinkedHashMap<String,RecyclerViewModel> hashMap;
+    private LinkedHashMap<String, RecyclerViewModel> hashMap;
+    private MovieDeatilService movieDeatilService;
+    private LinearLayoutManager linearLayoutManager;
+    private int index = 0;
     private View view;
 
     public DailyMovieFragment() {
@@ -67,6 +69,7 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
 
     @Override
     public void attach(Object presenter) {
+
     }
 
     @Override
@@ -75,10 +78,23 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
         dailyOfficeAdapter = new DailyOfficeAdapter(view.getContext());
         floatingActionButton = view.findViewById(R.id.floatingbutton);
         textView = view.findViewById(R.id.textView);
-        btn = view.findViewById(R.id.button);
+        //btn = view.findViewById(R.id.button);
         progressBar = view.findViewById(R.id.prog);
         recyclerView = view.findViewById(R.id.dailyrecyclerview);
         calendatinit();
+        //Button 클릭 이벤트 (View)textView
+        /*btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });*/
+        hashMap.clear();
+        dailyOfficeAdapter.clear();
+        MovieListRepository movieListRepository = new MovieListRepository();
+        boxOfficeService = movieListRepository.initBuild();
+        boxofficesearch(boxOfficeService);
+        progressBar.setVisibility(View.VISIBLE);
         //FloatingButton 클릭 이벤트 (View)
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,18 +103,6 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
             }
         });
 
-        //Button 클릭 이벤트 (View)
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hashMap.clear();
-                dailyOfficeAdapter.clear();
-                MovieListRepository movieListRepository = new MovieListRepository();
-                boxOfficeService = movieListRepository.initBuild();
-                boxofficesearch(boxOfficeService);
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
         return view;
     }
 
@@ -114,18 +118,68 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
                     List<DailyBoxOfficeList> dailyBoxOfficeLists = boxOfficeResult.getDailyBoxOfficeLists();
                     for (DailyBoxOfficeList dailyBoxOfficeList : dailyBoxOfficeLists) {
                         String dY = dateSet.substring(0, 4);
-                         hashMap.put(dailyBoxOfficeList.getMovieNm(),new RecyclerViewModel(dailyBoxOfficeList.getMovieNm(),dailyBoxOfficeList.getOpenDt(),dailyBoxOfficeList.getAudiAcc(),dY, dY));
+                        hashMap.put(dailyBoxOfficeList.getMovieNm(), new RecyclerViewModel(dailyBoxOfficeList.getMovieNm(), dailyBoxOfficeList.getOpenDt(), dailyBoxOfficeList.getAudiAcc(), dY, dY));
                     }
-                    Description description = new Description();
-                    description.re();
+                    MovieDetailRepository movieDetailRepository = new MovieDetailRepository();
+                    movieDeatilService = movieDetailRepository.initBuild();
+                    naverSearchApi();
                 } else {
                 }
             }
+
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
 
             }
         });
+    }
+
+    //네이버 검색 api를 통하여 recyclerview adapter에 붙이기
+    public void naverSearchApi() {
+        index = 0;
+        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(dailyOfficeAdapter);
+        try {
+            for (final String title : hashMap.keySet()) {
+                movieDeatilService.getMovies(title, 100, Integer.parseInt(hashMap.get(title).getEndYear()) - 100, Integer.parseInt(hashMap.get(title).getEndYear())).enqueue(new Callback<MovieDetail>() {
+                    @Override
+                    public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
+                        recyclerView.setNestedScrollingEnabled(false);
+                        if (response.isSuccessful()) {
+                            MovieDetail movieDetail = response.body();
+                            List<Item> items = movieDetail.getItems();
+                            for (Item items1 : items) {
+                                String naverTitle = StringEscapeUtils.unescapeHtml4(items1.getTitle());
+                                if ((naverTitle.length() == title.length() + 7)) {
+                                    index++;
+                                    RecyclerViewModel recyclerViewModel = hashMap.get(title);
+                                    recyclerViewModel.setImage(items1.getImage());
+                                    recyclerViewModel.setLink(items1.getLink());
+                                    recyclerViewModel.setDirector(items1.getDirector());
+                                    recyclerViewModel.setActor(items1.getActor());
+                                    recyclerViewModel.setUserRating(items1.getUserRating());
+                                    hashMap.put(title, recyclerViewModel);
+                                    if (hashMap.size() == index) {
+                                        for (String key : hashMap.keySet())
+                                            dailyOfficeAdapter.add(hashMap.get(key));
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        recyclerView.setNestedScrollingEnabled(true);
+                    }
+                    @Override
+                    public void onFailure(Call<MovieDetail> call, Throwable t) {
+
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //현재 년, 월, 일을 최신화 해주는 함수 (Presenter)
@@ -137,8 +191,8 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
         mYear = dateFormat.getCalendar().get(Calendar.YEAR);
         mMonth = dateFormat.getCalendar().get(Calendar.MONTH) + 1;
         mDay = dateFormat.getCalendar().get(Calendar.DAY_OF_MONTH) - 1;
-        dateSet = dateFormat(mYear, mMonth, mDay);
-        updateView();
+        //dateSet = dateFormat(mYear, mMonth, mDay);
+        //updateView();
     }
 
     //달력에서 년 월 일을 선택한후 확인버튼을 눌렀을 때 발생하는 리스너 (VIew)
@@ -148,25 +202,25 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
             mYear = year;
             mMonth = month + 1;
             mDay = day;
-            dateSet = dateFormat(mYear, mMonth, mDay);
-            updateView();
+            //dateSet = dateFormat(mYear, mMonth, mDay);
+            //updateView();
         }
     };
-
+/*
     //DatePickerDialog에서 나오는 년, 월, 일을 최신화 해주는 함수 (View)
     public void updateView() {
         String rDateSet = dateYMD(dateSet);
-        textView.setText(rDateSet);
-    }
-
+        //textView.setText(rDateSet);
+    }*/
+/*
     //년월일 에 각각 - - 를 붙여주는 함수 (Presenter)
     public String dateYMD(String data) {
         String rY = data.substring(0, 4);
         String rM = data.substring(4, 6);
         String rD = data.substring(6, 8);
         return rY + "-" + rM + "-" + rD;
-    }
-
+    }*/
+/*
     //날짜를 형식에 맞게 바꿔주는 함수 (Presenter)
     public String dateFormat(int year, int month, int day) {
         String result = "";
@@ -175,66 +229,5 @@ public class DailyMovieFragment extends Fragment implements DailyMovieContract.V
         else if (month <= 9) result = String.valueOf(year) + "0" + month + day;
         else result = String.valueOf(year) + month + day;
         return result;
-    }
-
-    public class Description {
-        private MovieDeatilService movieDeatilService;
-        private LinearLayoutManager linearLayoutManager;
-        private int index = 0;
-        //생성자
-        public Description() {
-            init();
-        }
-        public void init() {
-            MovieDetailRepository movieDetailRepository = new MovieDetailRepository();
-            movieDeatilService = movieDetailRepository.initBuild();
-        }
-
-        public void re() {
-            index = 0;
-            linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setAdapter(dailyOfficeAdapter);
-            try {
-                for (final String title : hashMap.keySet()) {
-                    movieDeatilService.getMovies(title, 100, Integer.parseInt(hashMap.get(title).getEndYear()) - 100, Integer.parseInt(hashMap.get(title).getEndYear())).enqueue(new Callback<MovieDetail>() {
-                        @Override
-                        public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
-                            recyclerView.setNestedScrollingEnabled(false);
-                            if (response.isSuccessful()) {
-                                MovieDetail movieDetail = response.body();
-                                List<Item> items = movieDetail.getItems();
-                                for (Item items1 : items) {
-                                    String naverTitle = StringEscapeUtils.unescapeHtml4(items1.getTitle());
-                                    if ((naverTitle.length() == title.length() + 7)) {
-                                        index++;
-                                        RecyclerViewModel recyclerViewModel = hashMap.get(title);
-                                        recyclerViewModel.setImage(items1.getImage());
-                                        recyclerViewModel.setLink(items1.getLink());
-                                        recyclerViewModel.setDirector(items1.getDirector());
-                                        recyclerViewModel.setActor(items1.getActor());
-                                        recyclerViewModel.setUserRating(items1.getUserRating());
-                                        hashMap.put(title,recyclerViewModel);
-                                        if(hashMap.size() == index){
-                                            for(String key : hashMap.keySet())
-                                            dailyOfficeAdapter.add(hashMap.get(key));
-                                            progressBar.setVisibility(View.GONE);
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                            recyclerView.setNestedScrollingEnabled(true);
-                        }
-                        @Override
-                        public void onFailure(Call<MovieDetail> call, Throwable t) {
-
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    }*/
 }

@@ -67,10 +67,12 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         recyclerViewModel = recyclerViewModels.get(position);
         holder.movieName.setText(recyclerViewModel.getMovieNm());
         String open = recyclerViewModel.getOpenDt().substring(5,recyclerViewModel.getOpenDt().length());
+        String audi = recyclerViewModel.getAudiAcc();
         open = open.replace("-","/");
-        holder.openDt.setText(open + " 개봉");
-        holder.director.setText(recyclerViewModel.getDirector() + "감독");
+        holder.openDt.setText(open + " 개봉 (" + audi + ")");
+        holder.director.setText(recyclerViewModel.getDirector().replace("|"," ") + "감독");
         float rating = Float.parseFloat(recyclerViewModel.getUserRating())/2;
+
         holder.ratingBar.setRating(rating);
         String rat = String.format("%.1f",rating);
         holder.rating.setText(rat);

@@ -32,7 +32,7 @@ public class RecyclerViewModel implements Serializable {
     public RecyclerViewModel(String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
         this.movieNm = movieNm;
         this.openDt = openDt;
-        this.audiAcc = openDt;
+        this.audiAcc = audiAcc;
         this.startYear = startYear;
         this.endYear = endYear;
     }
