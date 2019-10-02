@@ -22,7 +22,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         recyclerViewModel = (RecyclerViewModel)getIntent().getSerializableExtra("movieItem");
         String urlPath = recyclerViewModel.getLink();
-        Log.e("Start",urlPath + " 아아아아아");
         try{
             Document document = Jsoup.connect(urlPath).get();
             Log.e("Start",document.toString() + " 아");

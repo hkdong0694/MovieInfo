@@ -23,6 +23,7 @@
             android:layout_height="fill_parent"
             android:id="@+id/dailyrecyclerview"
             android:layout_below="@id/textView"
+            android:clipToPadding="false"
             android:layout_centerHorizontal="true"
             >
         </androidx.recyclerview.widget.RecyclerView>

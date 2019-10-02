@@ -14,7 +14,7 @@
         android:theme="@style/CutomTheme">
         <activity android:name=".View.MovieDetailActivity"></activity>
         <activity android:name=".View.MainActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

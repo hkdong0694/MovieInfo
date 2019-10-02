@@ -16,10 +16,14 @@ import android.widget.EditText;
 
 import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
 import com.example.movieinfo_mvp.Contract.SearchMovieContract;
+import com.example.movieinfo_mvp.Network.Model.DBResult;
 import com.example.movieinfo_mvp.Network.Model.Item;
 import com.example.movieinfo_mvp.Network.Model.MovieDetail;
+import com.example.movieinfo_mvp.Network.Model.MoviedbModel;
+import com.example.movieinfo_mvp.Network.MovieConst;
 import com.example.movieinfo_mvp.Network.MovieDeatilService;
 import com.example.movieinfo_mvp.R;
+import com.example.movieinfo_mvp.Repository.MovieDBRepository;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
 
 import java.util.List;
@@ -37,7 +41,7 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     private Button searchbutton;
     private EditText searchEdittext;
     private String searchName;
-    private MovieDetailRepository movieDetailRepository;
+    private MovieDBRepository movieDBRepository;
     private MovieDeatilService movieDeatilService;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerView;
@@ -62,8 +66,8 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.searchbutton:
-                movieDetailRepository = new MovieDetailRepository();
-                movieDeatilService = movieDetailRepository.initBuild();
+                movieDBRepository = new MovieDBRepository();
+                movieDeatilService = movieDBRepository.initBuild();
                 movieSearch(movieDeatilService);
                 break;
             default:
@@ -76,7 +80,18 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(dailyOfficeAdapter);
-        movieDeatilService.getSearch(searchName,100).enqueue(new Callback<MovieDetail>() {
+        movieDeatilService.getMovieDB(MovieConst.MovieDB_collection,MovieConst.MovieDB_service_key).enqueue(new Callback<DBResult>() {
+            @Override
+            public void onResponse(Call<DBResult> call, Response<DBResult> response) {
+                Log.e("Start",call.request().url().toString() + "성공?");
+            }
+
+            @Override
+            public void onFailure(Call<DBResult> call, Throwable t) {
+                Log.e("Start",call.request().url().toString() + "..??");
+            }
+        });
+/*        movieDeatilService.getSearch(searchName,100).enqueue(new Callback<MovieDetail>() {
                 @Override
                 public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
                     recyclerView.setNestedScrollingEnabled(false);
@@ -98,6 +113,6 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
                 public void onFailure(Call<MovieDetail> call, Throwable t) {
                     Log.e("Start",call.request().url().toString() + " url");
                 }
-            });
+            });*/
     }
 }

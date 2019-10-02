@@ -6,4 +6,7 @@ public class  MovieConst {
     public static final String N_base_url = "https://openapi.naver.com/v1/search/";
     public static final String CLIENT_ID = "lG13u0c7cEx3hy0QKlul";
     public static final String CLIENT_SECRET = "0PcQCNqMS1";
+    public static final String MovieDB_url = "http://api.koreafilm.or.kr";
+    public static final String MovieDB_service_key = "A47D7T5Y5C99GRB77608";
+    public static final String MovieDB_collection = "kmdb_new";
 }
