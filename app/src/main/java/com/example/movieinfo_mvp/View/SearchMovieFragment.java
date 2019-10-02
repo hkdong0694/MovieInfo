@@ -4,34 +4,100 @@ package com.example.movieinfo_mvp.View;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
 import com.example.movieinfo_mvp.Contract.SearchMovieContract;
+import com.example.movieinfo_mvp.Network.Model.Item;
+import com.example.movieinfo_mvp.Network.Model.MovieDetail;
+import com.example.movieinfo_mvp.Network.MovieDeatilService;
 import com.example.movieinfo_mvp.R;
+import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchMovieFragment extends Fragment implements SearchMovieContract.View {
+public class SearchMovieFragment extends Fragment implements View.OnClickListener {
 
+    private View view;
+    private Button searchbutton;
+    private EditText searchEdittext;
+    private String searchName;
+    private MovieDetailRepository movieDetailRepository;
+    private MovieDeatilService movieDeatilService;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerView recyclerView;
+    private DailyOfficeAdapter dailyOfficeAdapter;
 
     public SearchMovieFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void attach(Object presenter) {
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_movie, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_search_movie, container, false);
+        dailyOfficeAdapter = new DailyOfficeAdapter(view.getContext());
+        searchbutton = view.findViewById(R.id.searchbutton);
+        searchEdittext = view.findViewById(R.id.searchtext);
+        recyclerView = view.findViewById(R.id.SearchRecyclerview);
+        searchbutton.setOnClickListener(this);
+        return view;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.searchbutton:
+                movieDetailRepository = new MovieDetailRepository();
+                movieDeatilService = movieDetailRepository.initBuild();
+                movieSearch(movieDeatilService);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void movieSearch(MovieDeatilService movieDeatilService){
+        searchName = searchEdittext.getText().toString();
+        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(dailyOfficeAdapter);
+        movieDeatilService.getSearch(searchName,100).enqueue(new Callback<MovieDetail>() {
+                @Override
+                public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
+                    recyclerView.setNestedScrollingEnabled(false);
+                    if(response.isSuccessful()){
+                        MovieDetail movieDetail = response.body();
+                        List<Item> items = movieDetail.getItems();
+                        //어댑터 붙이면 된다..
+                        for(Item search : items){
+
+                        }
+                        Log.e("Start",items.size() + " 크기");
+                    } else{
+
+                    }
+                    recyclerView.setNestedScrollingEnabled(true);
+                }
+
+                @Override
+                public void onFailure(Call<MovieDetail> call, Throwable t) {
+                    Log.e("Start",call.request().url().toString() + " url");
+                }
+            });
+    }
 }

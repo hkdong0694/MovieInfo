@@ -13,13 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/CutomTheme">
         <activity android:name=".View.MovieDetailActivity"></activity>
-        <activity android:name=".View.MainActivity">
+        <activity android:name=".View.MainActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

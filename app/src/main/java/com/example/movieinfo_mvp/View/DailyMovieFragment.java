@@ -1,23 +1,18 @@
 package com.example.movieinfo_mvp.View;
 
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
-import com.example.movieinfo_mvp.Contract.DailyMovieContract;
 import com.example.movieinfo_mvp.Network.BoxOfficeService;
 import com.example.movieinfo_mvp.Network.Model.BoxOfficeResult;
 import com.example.movieinfo_mvp.Network.Model.DailyBoxOfficeList;
@@ -30,7 +25,6 @@ import com.example.movieinfo_mvp.Network.MovieDeatilService;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
 import com.example.movieinfo_mvp.Repository.MovieListRepository;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -87,15 +81,15 @@ public class DailyMovieFragment extends Fragment {
         boxOfficeService.getBoxOffice(MovieConst.key,dateSet).enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
-                Log.e("Start",call.request().url().toString() +" 9");
+                //Log.e("Start",call.request().url().toString() +" 9");
                 if (response.isSuccessful()) {
-                    Log.e("Start",System.currentTimeMillis() - start + " l");
+                    //Log.e("Start",System.currentTimeMillis() - start + " l");
                     Result result = response.body();
                     BoxOfficeResult boxOfficeResult = result.getBoxOfficeResult();
                     List<DailyBoxOfficeList> dailyBoxOfficeLists = boxOfficeResult.getDailyBoxOfficeLists();
                     for (DailyBoxOfficeList dailyBoxOfficeList : dailyBoxOfficeLists) {
                         String dY = dateSet.substring(0, 4);
-                        hashMap.put(dailyBoxOfficeList.getMovieNm(), new RecyclerViewModel(dailyBoxOfficeList.getMovieNm(), dailyBoxOfficeList.getOpenDt(), dailyBoxOfficeList.getAudiAcc(), dY, dY));
+                        hashMap.put(dailyBoxOfficeList.getMovieNm(), new RecyclerViewModel(dailyBoxOfficeList.getRank(),dailyBoxOfficeList.getMovieNm(), dailyBoxOfficeList.getOpenDt(), dailyBoxOfficeList.getAudiAcc(), dY, dY));
                     }
                     MovieDetailRepository movieDetailRepository = new MovieDetailRepository();
                     movieDeatilService = movieDetailRepository.initBuild();
@@ -107,7 +101,7 @@ public class DailyMovieFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-                Log.e("Start",call.request().url().toString());
+                //Log.e("Start",call.request().url().toString());
             }
         });
     }

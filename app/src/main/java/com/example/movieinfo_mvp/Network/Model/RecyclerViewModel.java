@@ -1,6 +1,5 @@
 package com.example.movieinfo_mvp.Network.Model;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -8,6 +7,7 @@ import java.io.Serializable;
 public class RecyclerViewModel implements Serializable {
     private static final long serialVersionUID = 1L;
 /*
+    rank	        문자열	        해당일자의 박스오피스 순위를 출력합니다.
     movieNm	        문자열	        영화명(국문)을 출력합니다.
     openDt	        문자열	        영화의 개봉일을 출력합니다.
     audiAcc	        문자열	        누적관객수를 출력합니다.
@@ -18,6 +18,7 @@ public class RecyclerViewModel implements Serializable {
     userRating	    integer	        검색 결과 영화에 대한 유저들의 평점이다.
 */
 
+    private String rank;
     private String movieNm;
     private String openDt;
     private String audiAcc;
@@ -29,12 +30,21 @@ public class RecyclerViewModel implements Serializable {
     private String startYear;
     private String endYear;
 
-    public RecyclerViewModel(String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
+    public RecyclerViewModel(String rank,String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
+        this.rank = rank;
         this.movieNm = movieNm;
         this.openDt = openDt;
         this.audiAcc = audiAcc;
         this.startYear = startYear;
         this.endYear = endYear;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
     }
 
     public String getStartYear() {

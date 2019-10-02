@@ -1,6 +1,7 @@
 package com.example.movieinfo_mvp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
+import com.example.movieinfo_mvp.View.MovieDetailActivity;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         private RatingBar ratingBar;
         private ImageView imageView;
         private TextView rating;
+        private TextView rank;
         private LinearLayout layout;
 
         public DailyOfficeHolder(View view){
@@ -53,6 +58,8 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
             imageView.setClipToOutline(true);
             director = view.findViewById(R.id.director);
             rating = view.findViewById(R.id.rating);
+            layout = view.findViewById(R.id.button);
+            rank = view.findViewById(R.id.rank);
             layout = view.findViewById(R.id.button);
         }
     }
@@ -68,6 +75,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
     @Override
     public void onBindViewHolder(@NonNull DailyOfficeHolder holder, final int position) {
         recyclerViewModel = recyclerViewModels.get(position);
+        holder.rank.setText(recyclerViewModel.getRank());
         holder.movieName.setText(recyclerViewModel.getMovieNm());
         String open = recyclerViewModel.getOpenDt().substring(5,recyclerViewModel.getOpenDt().length());
         audi = recyclerViewModel.getAudiAcc();
@@ -75,20 +83,19 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         holder.openDt.setText(open + " 개봉 (" + decimalFormat.format(Integer.parseInt(audi)) + "명)");
         holder.director.setText(recyclerViewModel.getDirector().replace("|"," ") + "감독");
         float rating = Float.parseFloat(recyclerViewModel.getUserRating())/2;
-
         holder.ratingBar.setRating(rating);
         String rat = String.format("%.1f",rating);
         holder.rating.setText(rat);
         Glide.with(holder.imageView.getContext()).load(recyclerViewModel.getImage()).format(DecodeFormat.PREFER_ARGB_8888)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).override(800,250).into(holder.imageView);
-       /* holder.button.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context,MovieDetailActivity.class);
+                Intent intent = new Intent(context, MovieDetailActivity.class);
                 intent.putExtra("movieItem",recyclerViewModels.get(position));
                 context.startActivity(intent);
             }
-        });*/
+        });
     }
 
     @Override
