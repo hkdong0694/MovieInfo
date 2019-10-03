@@ -12,9 +12,9 @@ import com.example.movieinfo_mvp.View.TopMovieFragment;
 public class MainPageAdapter extends FragmentPagerAdapter {
 
     private int tabCount;
-    private DailyMovieFragment dailyMovieFragment = new DailyMovieFragment();
-    private SearchMovieFragment searchMovieFragment = new SearchMovieFragment();
-    private TopMovieFragment topMovieFragment = new TopMovieFragment();
+    private DailyMovieFragment dailyMovieFragment;
+    private SearchMovieFragment searchMovieFragment;
+    private TopMovieFragment topMovieFragment;
 
     public MainPageAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -26,10 +26,13 @@ public class MainPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
+                dailyMovieFragment = new DailyMovieFragment();
                 return dailyMovieFragment;
             case 1:
+                searchMovieFragment = new SearchMovieFragment();
                 return searchMovieFragment;
             case 2:
+                topMovieFragment = new TopMovieFragment();
                 return topMovieFragment;
             default:
                 return null;

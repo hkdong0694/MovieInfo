@@ -2,7 +2,6 @@ package com.example.movieinfo_mvp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,30 +17,24 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Network.Model.Item;
-import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.View.MovieDetailActivity;
 
-import org.w3c.dom.Text;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.DailyOfficeHolder> {
+public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.MovieSearchHolder>{
 
     private Context context;
-    private List<RecyclerViewModel> recyclerViewModels = null;
-    private RecyclerViewModel recyclerViewModel;
-    private String audi;
-    private DecimalFormat decimalFormat = new DecimalFormat("###,###");
+    private List<Item> itemList = null;
+    private Item item;
 
-    public DailyOfficeAdapter(Context context){
-        this.recyclerViewModels = new ArrayList<>();
+    public SearchMovieAdapter(Context context){
+        itemList = new ArrayList<>();
         this.context = context;
     }
 
-    public class DailyOfficeHolder extends RecyclerView.ViewHolder {
+    public class MovieSearchHolder extends RecyclerView.ViewHolder{
 
         private TextView movieName;
         private TextView openDt;
@@ -52,7 +45,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         private TextView rank;
         private LinearLayout layout;
 
-        public DailyOfficeHolder(View view){
+        public MovieSearchHolder(View view){
             super(view);
             movieName = view.findViewById(R.id.moviename);
             openDt = view.findViewById(R.id.openDt);
@@ -64,56 +57,58 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
             layout = view.findViewById(R.id.button);
             rank = view.findViewById(R.id.rank);
             layout = view.findViewById(R.id.button);
+
         }
     }
 
+
     @NonNull
     @Override
-    public DailyOfficeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MovieSearchHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.dailymovielist_item,parent,false);
-        DailyOfficeHolder dailyOfficeHolder = new DailyOfficeHolder(rootView);
-        return dailyOfficeHolder;
+        MovieSearchHolder movieSearchHolder = new MovieSearchHolder(rootView);
+        return movieSearchHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DailyOfficeHolder holder, final int position) {
-        recyclerViewModel = recyclerViewModels.get(position);
-        holder.movieName.setText(recyclerViewModel.getMovieNm());
-        holder.director.setText(recyclerViewModel.getDirector().replace("|"," ") + "감독");
-        float rating = Float.parseFloat(recyclerViewModel.getUserRating())/2;
+    public void onBindViewHolder(@NonNull MovieSearchHolder holder, final int position) {
+        item = itemList.get(position);
+        holder.rank.setText(String.valueOf(position+1));
+        String name = item.getTitle().replace("<b>","");
+        name = name.replace("</b>","");
+        holder.movieName.setText(name);
+        holder.director.setText(item.getDirector().replace("|"," ") + "감독");
+        float rating = Float.parseFloat(item.getUserRating())/2;
         holder.ratingBar.setRating(rating);
         String rat = String.format("%.1f",rating);
         holder.rating.setText(rat);
-        Glide.with(holder.imageView.getContext()).load(recyclerViewModel.getImage()).format(DecodeFormat.PREFER_ARGB_8888)
+        holder.openDt.setText(item.getPubDate() + "년 개봉");
+
+        Glide.with(holder.imageView.getContext()).load(item.getImage()).format(DecodeFormat.PREFER_ARGB_8888).placeholder(R.drawable.noimage)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).override(180,250).into(holder.imageView);
-        holder.rank.setText(recyclerViewModel.getRank());
-        String open = recyclerViewModel.getOpenDt().substring(5,recyclerViewModel.getOpenDt().length());
-        audi = recyclerViewModel.getAudiAcc();
-        open = open.replace("-","/");
-        holder.openDt.setText(open + " 개봉 (" + decimalFormat.format(Integer.parseInt(audi)) + "명)");
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, MovieDetailActivity.class);
-                intent.putExtra("name","daily");
-                intent.putExtra("movie",recyclerViewModels.get(position));
+                intent.putExtra("name","search");
+                intent.putExtra("movie",itemList.get(position));
                 context.startActivity(intent);
             }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return recyclerViewModels.size();
-    }
-
-    public void add(RecyclerViewModel recyclerViewModel){
-        recyclerViewModels.add(recyclerViewModel);
-        notifyItemInserted(recyclerViewModels.size()-1);
+    public void add(Item item){
+        itemList.add(item);
+        notifyItemInserted(itemList.size()-1);
     }
 
     public void clear(){
-        recyclerViewModels.clear();
+        itemList.clear();
         notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return itemList.size();
     }
 }

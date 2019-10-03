@@ -10,6 +10,7 @@ public class RecyclerViewModel implements Serializable {
     rank	        문자열	        해당일자의 박스오피스 순위를 출력합니다.
     movieNm	        문자열	        영화명(국문)을 출력합니다.
     openDt	        문자열	        영화의 개봉일을 출력합니다.
+    pubDate	        문자열	        영화의 개봉년도를 출력합니다.
     audiAcc	        문자열	        누적관객수를 출력합니다.
     link	        string	        검색 결과 영화의 하이퍼텍스트 link를 나타낸다.
     image	        string	        검색 결과 영화의 썸네일 이미지의 URL이다. 이미지가 있는 경우만 나타난다.
@@ -29,6 +30,7 @@ public class RecyclerViewModel implements Serializable {
     private String userRating;
     private String startYear;
     private String endYear;
+    private String pubDate;
 
     public RecyclerViewModel(String rank,String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
         this.rank = rank;
@@ -127,4 +129,11 @@ public class RecyclerViewModel implements Serializable {
         this.userRating = userRating;
     }
 
+    public String getPubDate() {
+        return pubDate;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
 }

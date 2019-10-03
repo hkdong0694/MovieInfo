@@ -2,30 +2,26 @@ package com.example.movieinfo_mvp.View;
 
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
-import com.example.movieinfo_mvp.Contract.SearchMovieContract;
-import com.example.movieinfo_mvp.Network.Model.DBResult;
+import com.example.movieinfo_mvp.Adapter.SearchMovieAdapter;
 import com.example.movieinfo_mvp.Network.Model.Item;
 import com.example.movieinfo_mvp.Network.Model.MovieDetail;
-import com.example.movieinfo_mvp.Network.Model.MoviedbModel;
-import com.example.movieinfo_mvp.Network.MovieConst;
-import com.example.movieinfo_mvp.Network.MovieDeatilService;
+import com.example.movieinfo_mvp.Network.MovieInfoOpenApiService;
 import com.example.movieinfo_mvp.R;
-import com.example.movieinfo_mvp.Repository.MovieDBRepository;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,12 +36,13 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     private View view;
     private Button searchbutton;
     private EditText searchEdittext;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
     private String searchName;
-    private MovieDBRepository movieDBRepository;
-    private MovieDeatilService movieDeatilService;
+    private MovieInfoOpenApiService movieInfoOpenApiService;
+    private MovieDetailRepository movieDetailRepository;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerView;
-    private DailyOfficeAdapter dailyOfficeAdapter;
+    private SearchMovieAdapter searchMovieAdapter;
 
     public SearchMovieFragment() {
 
@@ -54,7 +51,12 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search_movie, container, false);
-        dailyOfficeAdapter = new DailyOfficeAdapter(view.getContext());
+        //액션바 숨기기 하면 되는데 안된다.;;
+        //((MainActivity)getActivity()).getSupportActionBar().hide();
+        long mNow = System.currentTimeMillis();
+        Date mDate = new Date(mNow);
+        dateFormat.format(mDate);
+        searchMovieAdapter = new SearchMovieAdapter(view.getContext());
         searchbutton = view.findViewById(R.id.searchbutton);
         searchEdittext = view.findViewById(R.id.searchtext);
         recyclerView = view.findViewById(R.id.SearchRecyclerview);
@@ -66,53 +68,39 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.searchbutton:
-                movieDBRepository = new MovieDBRepository();
-                movieDeatilService = movieDBRepository.initBuild();
-                movieSearch(movieDeatilService);
+                searchMovieAdapter.clear();
+                movieDetailRepository = new MovieDetailRepository();
+                movieInfoOpenApiService = movieDetailRepository.initBuild();
+                movieSearch(movieInfoOpenApiService);
                 break;
             default:
                 break;
         }
     }
 
-    public void movieSearch(MovieDeatilService movieDeatilService){
+    public void movieSearch(MovieInfoOpenApiService OpenApi){
         searchName = searchEdittext.getText().toString();
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(dailyOfficeAdapter);
-        movieDeatilService.getMovieDB(MovieConst.MovieDB_collection,MovieConst.MovieDB_service_key).enqueue(new Callback<DBResult>() {
+        recyclerView.setAdapter(searchMovieAdapter);
+        OpenApi.getMovies(searchName,100,dateFormat.getCalendar().get(Calendar.YEAR)-100,dateFormat.getCalendar().get(Calendar.YEAR)).enqueue(new Callback<MovieDetail>() {
             @Override
-            public void onResponse(Call<DBResult> call, Response<DBResult> response) {
-                Log.e("Start",call.request().url().toString() + "성공?");
+            public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
+                if(response.isSuccessful()){
+                    MovieDetail movieDetail = response.body();
+                    List<Item> items = movieDetail.getItems();
+                    for(Item item : items){
+                        searchMovieAdapter.add(item);
+                    }
+                } else{
+
+                }
             }
 
             @Override
-            public void onFailure(Call<DBResult> call, Throwable t) {
-                Log.e("Start",call.request().url().toString() + "..??");
+            public void onFailure(Call<MovieDetail> call, Throwable t) {
+
             }
         });
-/*        movieDeatilService.getSearch(searchName,100).enqueue(new Callback<MovieDetail>() {
-                @Override
-                public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
-                    recyclerView.setNestedScrollingEnabled(false);
-                    if(response.isSuccessful()){
-                        MovieDetail movieDetail = response.body();
-                        List<Item> items = movieDetail.getItems();
-                        //어댑터 붙이면 된다..
-                        for(Item search : items){
-
-                        }
-                        Log.e("Start",items.size() + " 크기");
-                    } else{
-
-                    }
-                    recyclerView.setNestedScrollingEnabled(true);
-                }
-
-                @Override
-                public void onFailure(Call<MovieDetail> call, Throwable t) {
-                    Log.e("Start",call.request().url().toString() + " url");
-                }
-            });*/
     }
 }

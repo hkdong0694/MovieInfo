@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
-import com.example.movieinfo_mvp.Network.BoxOfficeService;
 import com.example.movieinfo_mvp.Network.Model.BoxOfficeResult;
 import com.example.movieinfo_mvp.Network.Model.DailyBoxOfficeList;
 import com.example.movieinfo_mvp.Network.Model.Item;
@@ -21,7 +20,7 @@ import com.example.movieinfo_mvp.Network.Model.MovieDetail;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.Network.Model.Result;
 import com.example.movieinfo_mvp.Network.MovieConst;
-import com.example.movieinfo_mvp.Network.MovieDeatilService;
+import com.example.movieinfo_mvp.Network.MovieInfoOpenApiService;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
 import com.example.movieinfo_mvp.Repository.MovieListRepository;
@@ -46,11 +45,10 @@ public class DailyMovieFragment extends Fragment {
     private int mYear, mMonth, mDay;
     private String dateSet;
     private RecyclerView recyclerView;
-    private BoxOfficeService boxOfficeService;
+    private MovieInfoOpenApiService movieInfoOpenApiService;
     private ProgressBar progressBar;
     private DailyOfficeAdapter dailyOfficeAdapter;
     private LinkedHashMap<String, RecyclerViewModel> hashMap;
-    private MovieDeatilService movieDeatilService;
     private LinearLayoutManager linearLayoutManager;
     private int index = 0;
     private View view;
@@ -69,16 +67,16 @@ public class DailyMovieFragment extends Fragment {
         hashMap.clear();
         dailyOfficeAdapter.clear();
         MovieListRepository movieListRepository = new MovieListRepository();
-        boxOfficeService = movieListRepository.initBuild();
-        boxofficesearch(boxOfficeService);
+        movieInfoOpenApiService = movieListRepository.initBuild();
+        boxofficesearch(movieInfoOpenApiService);
         return view;
     }
 
     //날짜와 함꼐 영화진흥원 api 접근하여 날짜에 맞는 영화 제목 뽑아오기 (Presenter)
-    public void boxofficesearch(BoxOfficeService boxOfficeService) {
-        final long start = System.currentTimeMillis();
+    public void boxofficesearch(MovieInfoOpenApiService boxOfficeService) {
+        //final long start = System.currentTimeMillis();
 
-        boxOfficeService.getBoxOffice(MovieConst.key,dateSet).enqueue(new Callback<Result>() {
+        movieInfoOpenApiService.getBoxOffice(MovieConst.key,dateSet).enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 //Log.e("Start",call.request().url().toString() +" 9");
@@ -92,7 +90,7 @@ public class DailyMovieFragment extends Fragment {
                         hashMap.put(dailyBoxOfficeList.getMovieNm(), new RecyclerViewModel(dailyBoxOfficeList.getRank(),dailyBoxOfficeList.getMovieNm(), dailyBoxOfficeList.getOpenDt(), dailyBoxOfficeList.getAudiAcc(), dY, dY));
                     }
                     MovieDetailRepository movieDetailRepository = new MovieDetailRepository();
-                    movieDeatilService = movieDetailRepository.initBuild();
+                    movieInfoOpenApiService = movieDetailRepository.initBuild();
                     naverSearchApi();
                 } else {
 
@@ -115,7 +113,7 @@ public class DailyMovieFragment extends Fragment {
         recyclerView.setAdapter(dailyOfficeAdapter);
         try {
             for (final String title : hashMap.keySet()) {
-                movieDeatilService.getMovies(title, 100, Integer.parseInt(hashMap.get(title).getEndYear()) - 100, Integer.parseInt(hashMap.get(title).getEndYear())).enqueue(new Callback<MovieDetail>() {
+                movieInfoOpenApiService.getMovies(title, 100, Integer.parseInt(hashMap.get(title).getEndYear()) - 100, Integer.parseInt(hashMap.get(title).getEndYear())).enqueue(new Callback<MovieDetail>() {
                     @Override
                     public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
                         recyclerView.setNestedScrollingEnabled(false);
@@ -132,6 +130,7 @@ public class DailyMovieFragment extends Fragment {
                                     recyclerViewModel.setDirector(items1.getDirector());
                                     recyclerViewModel.setActor(items1.getActor());
                                     recyclerViewModel.setUserRating(items1.getUserRating());
+                                    recyclerViewModel.setPubDate(items1.getPubDate());
                                     hashMap.put(title, recyclerViewModel);
                                     if (hashMap.size() == index) {
                                         for (String key : hashMap.keySet())
