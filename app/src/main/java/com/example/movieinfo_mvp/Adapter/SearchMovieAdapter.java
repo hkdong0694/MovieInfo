@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -25,6 +26,16 @@ import java.util.List;
 
 public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.MovieSearchHolder>{
 
+    public interface OnclickListener{
+        void onclick(View v, int pos, ImageButton imageButton);
+    }
+
+    private SearchMovieAdapter.OnclickListener onclickListener1 = null;
+
+    public void setOnclickListener(SearchMovieAdapter.OnclickListener onclickListener){
+        this.onclickListener1 = onclickListener;
+    }
+
     private Context context;
     private List<Item> itemList = null;
     private Item item;
@@ -34,7 +45,7 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
         this.context = context;
     }
 
-    public class MovieSearchHolder extends RecyclerView.ViewHolder{
+    public class MovieSearchHolder extends RecyclerView.ViewHolder {
 
         private TextView movieName;
         private TextView openDt;
@@ -44,6 +55,7 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
         private TextView rating;
         private TextView rank;
         private LinearLayout layout;
+        private ImageButton imageButton;
 
         public MovieSearchHolder(View view){
             super(view);
@@ -57,7 +69,18 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
             layout = view.findViewById(R.id.button);
             rank = view.findViewById(R.id.rank);
             layout = view.findViewById(R.id.button);
-
+            imageButton = view.findViewById(R.id.imageButton);
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(onclickListener1 != null){
+                            onclickListener1.onclick(view,pos,imageButton);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -84,7 +107,7 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
         holder.rating.setText(rat);
         holder.openDt.setText(item.getPubDate() + "년 개봉");
 
-        Glide.with(holder.imageView.getContext()).load(item.getImage()).format(DecodeFormat.PREFER_ARGB_8888).placeholder(R.drawable.noimage)
+        Glide.with(holder.imageView.getContext()).load(item.getImage()).format(DecodeFormat.PREFER_ARGB_8888).placeholder(R.drawable.image2)
                 .diskCacheStrategy(DiskCacheStrategy.ALL).override(180,250).into(holder.imageView);
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +118,13 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
                 context.startActivity(intent);
             }
         });
+
+        /*holder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });*/
     }
 
     public void add(Item item){

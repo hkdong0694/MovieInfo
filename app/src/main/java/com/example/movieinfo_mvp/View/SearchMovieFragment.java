@@ -1,16 +1,20 @@
 package com.example.movieinfo_mvp.View;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.example.movieinfo_mvp.Adapter.SearchMovieAdapter;
 import com.example.movieinfo_mvp.Network.Model.Item;
@@ -45,14 +49,11 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
     private SearchMovieAdapter searchMovieAdapter;
 
     public SearchMovieFragment() {
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search_movie, container, false);
-        //액션바 숨기기 하면 되는데 안된다.;;
-        //((MainActivity)getActivity()).getSupportActionBar().hide();
         long mNow = System.currentTimeMillis();
         Date mDate = new Date(mNow);
         dateFormat.format(mDate);
@@ -61,6 +62,12 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
         searchEdittext = view.findViewById(R.id.searchtext);
         recyclerView = view.findViewById(R.id.SearchRecyclerview);
         searchbutton.setOnClickListener(this);
+        searchMovieAdapter.setOnclickListener(new SearchMovieAdapter.OnclickListener() {
+            @Override
+            public void onclick(View v, int pos, ImageButton imageButton) {
+                Log.e("Start",pos + " 번쨰 클릭!");
+            }
+        });
         return view;
     }
 
@@ -71,19 +78,19 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
                 searchMovieAdapter.clear();
                 movieDetailRepository = new MovieDetailRepository();
                 movieInfoOpenApiService = movieDetailRepository.initBuild();
-                movieSearch(movieInfoOpenApiService);
+                movieSearch();
                 break;
             default:
                 break;
         }
     }
 
-    public void movieSearch(MovieInfoOpenApiService OpenApi){
+    public void movieSearch(){
         searchName = searchEdittext.getText().toString();
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(searchMovieAdapter);
-        OpenApi.getMovies(searchName,100,dateFormat.getCalendar().get(Calendar.YEAR)-100,dateFormat.getCalendar().get(Calendar.YEAR)).enqueue(new Callback<MovieDetail>() {
+        movieInfoOpenApiService.getMovies(searchName,100,dateFormat.getCalendar().get(Calendar.YEAR)-100,dateFormat.getCalendar().get(Calendar.YEAR)).enqueue(new Callback<MovieDetail>() {
             @Override
             public void onResponse(Call<MovieDetail> call, Response<MovieDetail> response) {
                 if(response.isSuccessful()){
@@ -99,7 +106,7 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
 
             @Override
             public void onFailure(Call<MovieDetail> call, Throwable t) {
-
+                Log.e("Fail",t.getMessage());
             }
         });
     }

@@ -2,10 +2,12 @@ package com.example.movieinfo_mvp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -30,15 +32,29 @@ import java.util.List;
 
 public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.DailyOfficeHolder> {
 
+
+    public interface OnclickListener{
+        void onclick(View v, int pos,ImageButton imageButton);
+    }
+
+    private OnclickListener onclickListener1 = null;
+
+    public void setOnclickListener(OnclickListener onclickListener){
+        this.onclickListener1 = onclickListener;
+    }
+
     private Context context;
     private List<RecyclerViewModel> recyclerViewModels = null;
     private RecyclerViewModel recyclerViewModel;
     private String audi;
     private DecimalFormat decimalFormat = new DecimalFormat("###,###");
+    private SharedPreferences sf;
+    private SharedPreferences.Editor editor;
 
-    public DailyOfficeAdapter(Context context){
+    public DailyOfficeAdapter(Context context) {
         this.recyclerViewModels = new ArrayList<>();
         this.context = context;
+        sf = context.getSharedPreferences("Movielike",Context.MODE_PRIVATE);
     }
 
     public class DailyOfficeHolder extends RecyclerView.ViewHolder {
@@ -51,6 +67,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         private TextView rating;
         private TextView rank;
         private LinearLayout layout;
+        private ImageButton imageButton;
 
         public DailyOfficeHolder(View view){
             super(view);
@@ -64,6 +81,18 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
             layout = view.findViewById(R.id.button);
             rank = view.findViewById(R.id.rank);
             layout = view.findViewById(R.id.button);
+            imageButton = view.findViewById(R.id.imageButton);
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(onclickListener1 != null){
+                            onclickListener1.onclick(view,pos,imageButton);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -91,6 +120,11 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         audi = recyclerViewModel.getAudiAcc();
         open = open.replace("-","/");
         holder.openDt.setText(open + " 개봉 (" + decimalFormat.format(Integer.parseInt(audi)) + "명)");
+        String key = recyclerViewModel.getMovieNm() + recyclerViewModel.getPubDate()+recyclerViewModel.getDirector();
+        editor = sf.edit();
+        boolean check = sf.getBoolean(key,false);
+        if(!check) holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+        else holder.imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,6 +144,10 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
     public void add(RecyclerViewModel recyclerViewModel){
         recyclerViewModels.add(recyclerViewModel);
         notifyItemInserted(recyclerViewModels.size()-1);
+    }
+
+    public RecyclerViewModel get(int position){
+        return recyclerViewModels.get(position);
     }
 
     public void clear(){

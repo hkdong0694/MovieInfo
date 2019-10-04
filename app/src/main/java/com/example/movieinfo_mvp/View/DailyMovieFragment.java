@@ -1,15 +1,19 @@
 package com.example.movieinfo_mvp.View;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
@@ -50,6 +54,7 @@ public class DailyMovieFragment extends Fragment {
     private DailyOfficeAdapter dailyOfficeAdapter;
     private LinkedHashMap<String, RecyclerViewModel> hashMap;
     private LinearLayoutManager linearLayoutManager;
+    private SharedPreferences sf;
     private int index = 0;
     private View view;
 
@@ -68,14 +73,33 @@ public class DailyMovieFragment extends Fragment {
         dailyOfficeAdapter.clear();
         MovieListRepository movieListRepository = new MovieListRepository();
         movieInfoOpenApiService = movieListRepository.initBuild();
-        boxofficesearch(movieInfoOpenApiService);
+        sf = getContext().getSharedPreferences("Movielike", Context.MODE_PRIVATE);
+        boxofficesearch();
+
+        //imagebutton 클릭 할때 발생하는 리스너
+        dailyOfficeAdapter.setOnclickListener(new DailyOfficeAdapter.OnclickListener() {
+            @Override
+            public void onclick(View v, int pos, ImageButton imageButton) {
+                SharedPreferences.Editor editor = sf.edit();
+                RecyclerViewModel recyclerViewModel = dailyOfficeAdapter.get(pos);
+                String key = recyclerViewModel.getMovieNm() + recyclerViewModel.getPubDate() + recyclerViewModel.getDirector();
+                boolean check = sf.getBoolean(key,false);
+                if(!check) {
+                    imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
+                    editor.putBoolean(key,true);
+                } else {
+                    imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    editor.remove(key);
+                }
+                editor.commit();
+            }
+        });
         return view;
     }
 
     //날짜와 함꼐 영화진흥원 api 접근하여 날짜에 맞는 영화 제목 뽑아오기 (Presenter)
-    public void boxofficesearch(MovieInfoOpenApiService boxOfficeService) {
+    public void boxofficesearch() {
         //final long start = System.currentTimeMillis();
-
         movieInfoOpenApiService.getBoxOffice(MovieConst.key,dateSet).enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
@@ -93,7 +117,7 @@ public class DailyMovieFragment extends Fragment {
                     movieInfoOpenApiService = movieDetailRepository.initBuild();
                     naverSearchApi();
                 } else {
-
+                    Log.e("Start",call.request().url().toString() + " ");
                 }
             }
 

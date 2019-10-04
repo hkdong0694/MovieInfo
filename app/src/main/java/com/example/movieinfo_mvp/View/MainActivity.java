@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private TextView textView;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+    private SharedPreferences sf;
     private Date time;
 
     @Override
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_search_black_24dp));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_launcher_foreground));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        sf = getSharedPreferences("Movielike",MODE_PRIVATE);
+
         MainPageAdapter mainPageAdapter = new MainPageAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
         viewPager.setAdapter(mainPageAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
