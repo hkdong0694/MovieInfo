@@ -97,11 +97,10 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
                     for(Item item : items){
                         searchMovieAdapter.add(item);
                     }
-                } else{
+                } else {
 
                 }
             }
-
             @Override
             public void onFailure(Call<MovieDetail> call, Throwable t) {
                 Log.e("Fail",t.getMessage());

@@ -2,6 +2,8 @@ package com.example.movieinfo_mvp.Network.Model.KMDetail;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class MovieResult {
 
     @SerializedName("DOCID")
@@ -13,15 +15,16 @@ public class MovieResult {
     private String titleOrg;
     private String titleEtc;
     private String plot;
-    //private String prodYear;
-    /*private List<MovieDirectorModel> director;
-    private List<MovieActorModel> actor;
+    private String prodYear;
+    @SerializedName("director")
+    private List<MovieDirector> director;
+    @SerializedName("actor")
+    private List<MovieActor> actor;
     private String nation;
     private String company;
-    private String plot;
     @SerializedName("runtime")
     private String runTime;
-    private String rating;
+    //private String rating;
     private String genre;
     private String kmdbUrl;
     private String type;
@@ -32,9 +35,10 @@ public class MovieResult {
     //R옆에 i인지 l 인지 구분 불가
     private String repRlsDate;
     private String keywords;
+    @SerializedName("posters")
     private String posters;
     private String stlls;
-    private List<MovieStaffModel> staff;*/
+    private List<MovieStaff> staff;
 
     public String getDocid() {
         return docid;
@@ -100,27 +104,27 @@ public class MovieResult {
         this.plot = plot;
     }
 
-    /*    public String getProdYear() {
+        public String getProdYear() {
         return prodYear;
     }
 
     public void setProdYear(String prodYear) {
         this.prodYear = prodYear;
-    }*/
+    }
 
-   /* public List<MovieDirectorModel> getDirector() {
+    public List<MovieDirector> getDirector() {
         return director;
     }
 
-    public void setDirector(List<MovieDirectorModel> director) {
+    public void setDirector(List<MovieDirector> director) {
         this.director = director;
     }
 
-    public List<MovieActorModel> getActor() {
+    public List<MovieActor> getActor() {
         return actor;
     }
 
-    public void setActor(List<MovieActorModel> actor) {
+    public void setActor(List<MovieActor> actor) {
         this.actor = actor;
     }
 
@@ -140,14 +144,6 @@ public class MovieResult {
         this.company = company;
     }
 
-    public String getPlot() {
-        return plot;
-    }
-
-    public void setPlot(String plot) {
-        this.plot = plot;
-    }
-
     public String getRunTime() {
         return runTime;
     }
@@ -155,15 +151,6 @@ public class MovieResult {
     public void setRunTime(String runTime) {
         this.runTime = runTime;
     }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
     public String getGenre() {
         return genre;
     }
@@ -252,12 +239,12 @@ public class MovieResult {
         this.stlls = stlls;
     }
 
-    public List<MovieStaffModel> getStaff() {
+    public List<MovieStaff> getStaff() {
         return staff;
     }
 
-    public void setStaff(List<MovieStaffModel> staff) {
+    public void setStaff(List<MovieStaff> staff) {
         this.staff = staff;
-    }*/
+    }
 
 }
