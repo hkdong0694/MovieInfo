@@ -1,7 +1,6 @@
 package com.example.movieinfo_mvp.View;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,11 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.example.movieinfo_mvp.Adapter.SearchMovieAdapter;
-import com.example.movieinfo_mvp.Network.Model.Item;
-import com.example.movieinfo_mvp.Network.Model.MovieDetail;
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.Item;
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.MovieDetail;
 import com.example.movieinfo_mvp.Network.MovieInfoOpenApiService;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;

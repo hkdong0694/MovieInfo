@@ -19,12 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.movieinfo_mvp.Network.Model.Item;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.View.MovieDetailActivity;
-
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -73,7 +70,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
             super(view);
             movieName = view.findViewById(R.id.moviename);
             openDt = view.findViewById(R.id.openDt);
-            ratingBar = view.findViewById(R.id.ratingbar);
+            ratingBar = view.findViewById(R.id.ratinga);
             imageView = view.findViewById(R.id.imageView);
             imageView.setClipToOutline(true);
             director = view.findViewById(R.id.director);
@@ -110,11 +107,11 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         holder.movieName.setText(recyclerViewModel.getMovieNm());
         holder.director.setText(recyclerViewModel.getDirector().replace("|"," ") + "감독");
         float rating = Float.parseFloat(recyclerViewModel.getUserRating())/2;
-        holder.ratingBar.setRating(rating);
         String rat = String.format("%.1f",rating);
         holder.rating.setText(rat);
+        holder.ratingBar.setRating(rating);
         Glide.with(holder.imageView.getContext()).load(recyclerViewModel.getImage()).format(DecodeFormat.PREFER_ARGB_8888)
-                .diskCacheStrategy(DiskCacheStrategy.ALL).override(180,250).into(holder.imageView);
+                .diskCacheStrategy(DiskCacheStrategy.ALL).override(220,250).into(holder.imageView);
         holder.rank.setText(recyclerViewModel.getRank());
         String open = recyclerViewModel.getOpenDt().substring(5,recyclerViewModel.getOpenDt().length());
         audi = recyclerViewModel.getAudiAcc();

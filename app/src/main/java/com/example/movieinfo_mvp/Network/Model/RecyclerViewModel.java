@@ -31,6 +31,7 @@ public class RecyclerViewModel implements Serializable {
     private String startYear;
     private String endYear;
     private String pubDate;
+    private Boolean check;
 
     public RecyclerViewModel(String rank,String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
         this.rank = rank;
@@ -135,5 +136,13 @@ public class RecyclerViewModel implements Serializable {
 
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
+    }
+
+    public Boolean getCheck() {
+        return check;
+    }
+
+    public void setCheck(Boolean check) {
+        this.check = check;
     }
 }

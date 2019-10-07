@@ -1,7 +1,9 @@
 package com.example.movieinfo_mvp.Network;
 
-import com.example.movieinfo_mvp.Network.Model.MovieDetail;
-import com.example.movieinfo_mvp.Network.Model.Result;
+import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieData;
+import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieQuery;
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.MovieDetail;
+import com.example.movieinfo_mvp.Network.Model.DailyOffice.Result;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,6 +20,6 @@ public interface MovieInfoOpenApiService {
     Call<MovieDetail> getMovies(@Query("query")String movieName, @Query("display") int display, @Query("yearfrom") int yearfrom, @Query("yearto") int yearto);
 
     @GET("openapi-data2/wisenut/search_api/search_json.jsp")
-    Call<Result> getMovieDB(@Query("collection")String kmdb, @Query("title")String title, @Query("ServiceKey") String key);
+    Call<MovieQuery> getMovieDB(@Query("collection")String kmdb, @Query("title")String title, @Query("createDts")String openDt, @Query("ServiceKey") String key);
 
 }

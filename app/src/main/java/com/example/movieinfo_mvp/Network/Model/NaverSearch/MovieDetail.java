@@ -1,4 +1,6 @@
-package com.example.movieinfo_mvp.Network.Model;
+package com.example.movieinfo_mvp.Network.Model.NaverSearch;
+
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.Item;
 
 import java.util.ArrayList;
 import java.util.List;

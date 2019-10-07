@@ -17,21 +17,26 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.example.movieinfo_mvp.Adapter.DailyOfficeAdapter;
-import com.example.movieinfo_mvp.Network.Model.BoxOfficeResult;
-import com.example.movieinfo_mvp.Network.Model.DailyBoxOfficeList;
-import com.example.movieinfo_mvp.Network.Model.Item;
-import com.example.movieinfo_mvp.Network.Model.MovieDetail;
+import com.example.movieinfo_mvp.Network.Model.DailyOffice.BoxOfficeResult;
+import com.example.movieinfo_mvp.Network.Model.DailyOffice.DailyBoxOfficeList;
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.Item;
+import com.example.movieinfo_mvp.Network.Model.NaverSearch.MovieDetail;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
-import com.example.movieinfo_mvp.Network.Model.Result;
+import com.example.movieinfo_mvp.Network.Model.DailyOffice.Result;
 import com.example.movieinfo_mvp.Network.MovieConst;
 import com.example.movieinfo_mvp.Network.MovieInfoOpenApiService;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.Repository.MovieDetailRepository;
 import com.example.movieinfo_mvp.Repository.MovieListRepository;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -56,7 +61,9 @@ public class DailyMovieFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private SharedPreferences sf;
     private int index = 0;
+    private Gson gson = new GsonBuilder().create();
     private View view;
+    private List<RecyclerViewModel> listData;
 
     public DailyMovieFragment() {
         hashMap = new LinkedHashMap<>();
@@ -83,18 +90,63 @@ public class DailyMovieFragment extends Fragment {
                 SharedPreferences.Editor editor = sf.edit();
                 RecyclerViewModel recyclerViewModel = dailyOfficeAdapter.get(pos);
                 String key = recyclerViewModel.getMovieNm() + recyclerViewModel.getPubDate() + recyclerViewModel.getDirector();
+                listData = new ArrayList<>();
+                listData = onSearchData();
                 boolean check = sf.getBoolean(key,false);
                 if(!check) {
                     imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
                     editor.putBoolean(key,true);
+                    recyclerViewModel.setCheck(true);
+                    onStoreData(listData,recyclerViewModel);
                 } else {
                     imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
                     editor.remove(key);
+                    if(listData != null) onRemoveData(listData,recyclerViewModel);
                 }
                 editor.commit();
             }
         });
         return view;
+    }
+
+    public void onRemoveData(List<RecyclerViewModel> listData, RecyclerViewModel recyclerViewModel){
+        int index = 0;
+        for(RecyclerViewModel k : listData){
+            if(k.getMovieNm().equals(recyclerViewModel.getMovieNm())){
+                break;
+            }
+            index++;
+        }
+        listData.remove(index);
+        gson = new GsonBuilder().create();
+        Type listT = new TypeToken<ArrayList<RecyclerViewModel>>() {}.getType();
+        String json = gson.toJson(listData,listT);
+        SharedPreferences.Editor editor = sf.edit();
+        editor.putString("like",json);
+        editor.commit();
+    }
+
+    public void onStoreData(List<RecyclerViewModel> listData, RecyclerViewModel recyclerViewModel){
+        List<RecyclerViewModel> a;
+        if(listData == null){
+            a = new ArrayList<>();
+        } else{
+            a = listData;
+        }
+        a.add(recyclerViewModel);
+        gson = new GsonBuilder().create();
+        Type listT = new TypeToken<ArrayList<RecyclerViewModel>>() {}.getType();
+        String json = gson.toJson(a,listT);
+        SharedPreferences.Editor editor = sf.edit();
+        editor.putString("like",json);
+        editor.commit();
+    }
+
+    public List<RecyclerViewModel> onSearchData(){
+        String strModel = sf.getString("like","");
+        Type listType = new TypeToken<ArrayList<RecyclerViewModel>>() {}.getType();
+        List<RecyclerViewModel> datas = gson.fromJson(strModel,listType);
+        return datas;
     }
 
     //날짜와 함꼐 영화진흥원 api 접근하여 날짜에 맞는 영화 제목 뽑아오기 (Presenter)
@@ -199,4 +251,5 @@ public class DailyMovieFragment extends Fragment {
         else result = String.valueOf(year) + month + day;
         return result;
     }
+
 }

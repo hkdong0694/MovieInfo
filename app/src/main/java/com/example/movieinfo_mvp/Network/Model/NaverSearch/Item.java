@@ -1,4 +1,4 @@
-package com.example.movieinfo_mvp.Network.Model;
+package com.example.movieinfo_mvp.Network.Model.NaverSearch;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.example.movieinfo_mvp.Network.Model;
+package com.example.movieinfo_mvp.Network.Model.DailyOffice;
 
 import com.google.gson.annotations.Expose;
 
