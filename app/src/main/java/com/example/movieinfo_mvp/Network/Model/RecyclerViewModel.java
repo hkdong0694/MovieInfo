@@ -31,6 +31,7 @@ public class RecyclerViewModel implements Serializable {
     private String startYear;
     private String endYear;
     private String pubDate;
+    private String subtitle;
     private Boolean check;
 
     public RecyclerViewModel(String rank,String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
@@ -144,5 +145,13 @@ public class RecyclerViewModel implements Serializable {
 
     public void setCheck(Boolean check) {
         this.check = check;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 }

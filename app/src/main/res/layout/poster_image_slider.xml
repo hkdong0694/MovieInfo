@@ -9,7 +9,7 @@
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
         android:id="@+id/imageView"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         />
 
 

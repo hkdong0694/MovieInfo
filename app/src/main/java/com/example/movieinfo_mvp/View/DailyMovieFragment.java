@@ -202,11 +202,13 @@ public class DailyMovieFragment extends Fragment {
                                     index++;
                                     RecyclerViewModel recyclerViewModel = hashMap.get(title);
                                     recyclerViewModel.setImage(items1.getImage());
+                                    recyclerViewModel.setSubtitle(items1.getSubtitle());
                                     recyclerViewModel.setLink(items1.getLink());
                                     recyclerViewModel.setDirector(items1.getDirector());
                                     recyclerViewModel.setActor(items1.getActor());
                                     recyclerViewModel.setUserRating(items1.getUserRating());
                                     recyclerViewModel.setPubDate(items1.getPubDate());
+
                                     hashMap.put(title, recyclerViewModel);
                                     if (hashMap.size() == index) {
                                         for (String key : hashMap.keySet())

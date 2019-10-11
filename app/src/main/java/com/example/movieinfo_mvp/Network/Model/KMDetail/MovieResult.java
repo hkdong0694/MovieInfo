@@ -1,7 +1,9 @@
 package com.example.movieinfo_mvp.Network.Model.KMDetail;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieResult {
@@ -22,23 +24,19 @@ public class MovieResult {
     private List<MovieActor> actor;
     private String nation;
     private String company;
-    @SerializedName("runtime")
-    private String runTime;
-    //private String rating;
     private String genre;
     private String kmdbUrl;
     private String type;
     private String use;
     private String episodes;
-    private String ratedYn;
-    private String repRatDate;
-    //R옆에 i인지 l 인지 구분 불가
-    private String repRlsDate;
     private String keywords;
     @SerializedName("posters")
     private String posters;
     private String stlls;
     private List<MovieStaff> staff;
+    /*@Expose
+    @SerializedName("rating")
+    private List<MovieRating> movieRatings;*/
 
     public String getDocid() {
         return docid;
@@ -144,13 +142,6 @@ public class MovieResult {
         this.company = company;
     }
 
-    public String getRunTime() {
-        return runTime;
-    }
-
-    public void setRunTime(String runTime) {
-        this.runTime = runTime;
-    }
     public String getGenre() {
         return genre;
     }
@@ -191,30 +182,6 @@ public class MovieResult {
         this.episodes = episodes;
     }
 
-    public String getRatedYn() {
-        return ratedYn;
-    }
-
-    public void setRatedYn(String ratedYn) {
-        this.ratedYn = ratedYn;
-    }
-
-    public String getRepRatDate() {
-        return repRatDate;
-    }
-
-    public void setRepRatDate(String repRatDate) {
-        this.repRatDate = repRatDate;
-    }
-
-    public String getRepRlsDate() {
-        return repRlsDate;
-    }
-
-    public void setRepRlsDate(String repRlsDate) {
-        this.repRlsDate = repRlsDate;
-    }
-
     public String getKeywords() {
         return keywords;
     }
@@ -247,4 +214,11 @@ public class MovieResult {
         this.staff = staff;
     }
 
+    /*public List<MovieRating> getMovieRatings() {
+        return movieRatings;
+    }
+
+    public void setMovieRatings(List<MovieRating> movieRatings) {
+        this.movieRatings = movieRatings;
+    }*/
 }
