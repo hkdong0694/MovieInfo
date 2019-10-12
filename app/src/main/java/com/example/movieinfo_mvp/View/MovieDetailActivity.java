@@ -2,6 +2,8 @@ package com.example.movieinfo_mvp.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.drawable.Drawable;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Adapter.ImageViewPager;
+import com.example.movieinfo_mvp.Adapter.SubDetailAdapter;
 import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieActor;
 import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieQuery;
 import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieRating;
@@ -29,9 +32,6 @@ import com.example.movieinfo_mvp.Repository.MovieDBRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import me.relex.circleindicator.CircleIndicator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,6 +42,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     private MovieInfoOpenApiService movieInfoOpenApiService;
     private ImageViewPager imageViewPager;
     private ImageView imageCenter;
+
+    private SubDetailAdapter subDetailAdapter;
+    private RecyclerView sub_recycler;
+    private LinearLayoutManager horziontallayout;
+
     private TextView detail_title;
     private TextView detail_Engtitle;
     private TextView plot;
@@ -63,9 +68,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         actionBar.hide();
         //이미지 Background 랜덤으로 넣어주는 함수
         imageRandom();
-        Log.e("Start"," MovieDetail");
         //viewPager = findViewById(R.id.viewpager);
         //indicator = findViewById(R.id.indicator);
+
         imageCenter = findViewById(R.id.imageCenter);
         detail_title = findViewById(R.id.detail_title);
         detail_Engtitle = findViewById(R.id.detail_Engtitle);
@@ -87,6 +92,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             //Glide.with(getApplicationContext()).load(recyclerViewModel.getImage()).diskCacheStrategy(DiskCacheStrategy.ALL).override(250,250).into(imageCenter);
             movieDetail(recyclerViewModel.getMovieNm(),recyclerViewModel.getPubDate());
         }
+
+
     }
 
     public void movieDetail(String title, String openDt){
@@ -97,6 +104,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     MovieQuery movieQuery = response.body();
                     MovieResult movieResult = movieQuery.getMovieData().get(0).getResult().get(0);
                     plot.setText(movieResult.getPlot());
+                    sub_adapter(movieResult);
                     String posters[] = movieResult.getStlls().split("\\|");
                     MovieActor movieActor = movieResult.getActor().get(0);
                     Log.e("Start",movieActor.getActorNm() + " ??");
@@ -116,6 +124,15 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.e("Start",t.getMessage());
             }
         });
+    }
+
+    public void sub_adapter(MovieResult movieResult){
+        sub_recycler = findViewById(R.id.sub_detail);
+        subDetailAdapter = new SubDetailAdapter(this,movieResult);
+        horziontallayout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
+        sub_recycler.setHasFixedSize(true);
+        sub_recycler.setLayoutManager(horziontallayout);
+        sub_recycler.setAdapter(subDetailAdapter);
     }
 
     // 관람가에 따른 imageview 붙여주는 함수

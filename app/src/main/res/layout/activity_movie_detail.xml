@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:orientation="vertical"
     tools:context=".View.MovieDetailActivity">
@@ -68,7 +69,7 @@
                android:textColor="#000000"
                android:maxLines="1"
                android:autoSizeTextType="uniform"
-               android:textSize="23sp"
+               android:textSize="21sp"
                />
 
            <TextView
@@ -112,14 +113,22 @@
                android:layout_height="wrap_content"
                android:id="@+id/plot"
                android:textSize="14sp"
-               android:lineSpacingExtra="4dp"
-               android:layout_marginLeft="10dp"
-               android:layout_marginTop="5dp"
-               android:layout_marginRight="10dp"
+               android:lineSpacingExtra="7dp"
+               android:layout_margin="10dp"
                android:textStyle="normal"
-               android:maxLines="7"
-               android:ellipsize="end"
                />
+
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:id="@+id/sub_detail"
+               android:background="#FDFCFC"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               >
+
+           </androidx.recyclerview.widget.RecyclerView>
 
        </LinearLayout>
 

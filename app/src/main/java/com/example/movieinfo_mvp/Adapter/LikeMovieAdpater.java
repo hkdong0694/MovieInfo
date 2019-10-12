@@ -67,6 +67,7 @@ public class LikeMovieAdpater  extends RecyclerView.Adapter<LikeMovieAdpater.lik
         });
     }
 
+
     @Override
     public int getItemCount() {
         return recyclerViewModels.size();

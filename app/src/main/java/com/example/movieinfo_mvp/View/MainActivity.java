@@ -70,4 +70,5 @@ public class MainActivity extends AppCompatActivity {
         View view = actionBar.getCustomView();
         textView = view.findViewById(R.id.movieDt);
    }
+
 }
