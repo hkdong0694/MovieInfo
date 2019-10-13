@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class TopMovieFragment extends Fragment implements TopMovieContract.View 
     private Gson gson;
     private LikeMovieAdpater likeMovieAdpater;
     private GridLayoutManager gridLayoutManager;
+    private ArrayList<RecyclerViewModel> datas = new ArrayList<>();
 
     public TopMovieFragment() {
 
@@ -49,16 +51,22 @@ public class TopMovieFragment extends Fragment implements TopMovieContract.View 
         view = inflater.inflate(R.layout.fragment_top_movie, container, false);
         sf = getContext().getSharedPreferences("Movielike", Context.MODE_PRIVATE);
         recyclerView = view.findViewById(R.id.likeview);
+        likeMovieAdpater = new LikeMovieAdpater(view.getContext());
+        likeMovieAdpater.clear();
+        Log.e("Start","TopMovie Fragment  불림");
         gridLayoutManager = new GridLayoutManager(view.getContext(),3);
         String key = sf.getString("like",null);
-        if(key != null){
+        if(key != null) {
             gson = new GsonBuilder().create();
             Type listType = new TypeToken<ArrayList<RecyclerViewModel>>() {}.getType();
-            ArrayList<RecyclerViewModel> datas = gson.fromJson(key,listType);
-            likeMovieAdpater = new LikeMovieAdpater(view.getContext(),datas);
-            recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(likeMovieAdpater);
+            datas = gson.fromJson(key,listType);
+            for(RecyclerViewModel recyclerViewModel : datas) {
+                Log.e("Start",recyclerViewModel.getMovieNm() + " 저장");
+                likeMovieAdpater.add(recyclerViewModel);
+            }
         }
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(likeMovieAdpater);
         return view;
     }
 }

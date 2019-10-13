@@ -1,7 +1,10 @@
 package com.example.movieinfo_mvp.Network.Model.KMDetail;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MovieStaff {
 
+    @SerializedName("staffNm")
     private String staffMn;
     private String staffRoleGroup;
     private String staffRole;

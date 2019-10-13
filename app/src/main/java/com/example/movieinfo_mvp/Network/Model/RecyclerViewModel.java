@@ -4,8 +4,7 @@ package com.example.movieinfo_mvp.Network.Model;
 import java.io.Serializable;
 
 //리싸이클러뷰에 붙일 모델
-public class RecyclerViewModel implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class RecyclerViewModel implements Serializable { //직렬화
 /*
     rank	        문자열	        해당일자의 박스오피스 순위를 출력합니다.
     movieNm	        문자열	        영화명(국문)을 출력합니다.
@@ -33,6 +32,13 @@ public class RecyclerViewModel implements Serializable {
     private String pubDate;
     private String subtitle;
     private Boolean check;
+
+    public RecyclerViewModel(String name, String pubDate,String subtitle,String image){
+        this.movieNm = name;
+        this.pubDate = pubDate;
+        this.subtitle = subtitle;
+        this.image = image;
+    }
 
     public RecyclerViewModel(String rank,String movieNm, String openDt, String audiAcc,String startYear, String endYear) {
         this.rank = rank;

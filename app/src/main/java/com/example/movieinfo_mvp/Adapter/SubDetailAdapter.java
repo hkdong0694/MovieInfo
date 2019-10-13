@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieinfo_mvp.Network.Model.KMDetail.MovieResult;
 import com.example.movieinfo_mvp.R;
 
-import java.util.ArrayList;
 
 public class SubDetailAdapter  extends RecyclerView.Adapter<SubDetailAdapter.SubDetailholder> {
 
@@ -26,20 +25,16 @@ public class SubDetailAdapter  extends RecyclerView.Adapter<SubDetailAdapter.Sub
     }
 
     public class SubDetailholder extends RecyclerView.ViewHolder{
-
         private TextView sub_title;
         private TextView sub_content;
         private View guideview;
-
         public SubDetailholder(View view){
             super(view);
             sub_title = view.findViewById(R.id.subtitle);
             sub_content = view.findViewById(R.id.subcomment);
             guideview  = view.findViewById(R.id.guideline);
         }
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -56,32 +51,15 @@ public class SubDetailAdapter  extends RecyclerView.Adapter<SubDetailAdapter.Sub
 
     @Override
     public void onBindViewHolder(@NonNull SubDetailholder holder, int position) {
-
-        if(position == sub.length - 1){
-            holder.guideview.setVisibility(View.INVISIBLE);
-        }
+        if(position == sub.length - 1){holder.guideview.setVisibility(View.INVISIBLE); }
         holder.sub_title.setText(sub[position]);
-
         switch (position){
-            case 0:
-                holder.sub_content.setText(movieResult.getProdYear());
-                break;
-            case 1:
-                holder.sub_content.setText(movieResult.getGenre());
-                break;
-            case 2:
-                holder.sub_content.setText(movieResult.getType());
-                break;
-            case 3:
-                holder.sub_content.setText(movieResult.getNation());
-                break;
-            case 4:
-                holder.sub_content.setText(movieResult.getKeywords());
-                break;
-            case 5:
-                holder.sub_content.setText(movieResult.getCompany());
-                break;
+            case 0: holder.sub_content.setText(movieResult.getProdYear());break;
+            case 1: holder.sub_content.setText(movieResult.getGenre());break;
+            case 2: holder.sub_content.setText(movieResult.getType());break;
+            case 3: holder.sub_content.setText(movieResult.getNation());break;
+            case 4: holder.sub_content.setText(movieResult.getKeywords());break;
+            case 5: holder.sub_content.setText(movieResult.getCompany());break;
         }
-
     }
 }

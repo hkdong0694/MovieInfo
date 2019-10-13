@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:orientation="vertical"
     tools:context=".View.MovieDetailActivity">
@@ -56,36 +55,57 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:background="#ffffff"
-           android:orientation="vertical"
+           android:orientation="horizontal"
            >
 
-           <TextView
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               >
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/detail_title"
+                   android:text="조커"
+                   android:layout_marginLeft="10dp"
+                   android:textStyle="bold"
+                   android:textColor="#000000"
+                   android:maxLines="1"
+                   android:autoSizeTextType="uniform"
+                   android:textSize="21sp"
+                   />
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:id="@+id/detail_Engtitle"
+                   android:textStyle="normal"
+                   android:text="(Joker)"
+                   android:textColor="#242323"
+                   android:layout_marginLeft="10dp"
+                   android:paddingBottom="5dp"
+                   android:maxLines="1"
+                   android:autoSizeTextType="uniform"
+                   android:textSize="14sp"
+                   />
+
+           </LinearLayout>
+
+           <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="match_parent"
-               android:id="@+id/detail_title"
-               android:text="조커"
-               android:layout_marginLeft="10dp"
-               android:textStyle="bold"
-               android:textColor="#000000"
-               android:maxLines="1"
-               android:autoSizeTextType="uniform"
-               android:textSize="21sp"
-               />
-
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/detail_Engtitle"
-               android:textStyle="normal"
-               android:text="(Joker)"
-               android:textColor="#242323"
-               android:layout_marginLeft="10dp"
-               android:paddingBottom="5dp"
-               android:maxLines="1"
-               android:autoSizeTextType="uniform"
-               android:textSize="14sp"
-               />
-
+               android:gravity="right|center_vertical"
+               android:id="@+id/relative"
+               >
+               <ImageView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:paddingRight="30dp"
+                   android:id="@+id/sub_like"
+                   android:src="@drawable/ic_favorite_black_24dp"
+                   />
+           </LinearLayout>
        </LinearLayout>
 
        <LinearLayout
@@ -100,7 +120,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="기본정보"
+               android:text="줄거리"
                android:layout_marginLeft="10dp"
                android:id="@+id/information"
                android:textSize="18sp"
@@ -132,36 +152,6 @@
 
        </LinearLayout>
 
-       <!--<LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="0dp"
-           android:orientation="vertical"
-           android:layout_weight="2"
-           >
-
-           <androidx.viewpager.widget.ViewPager
-               android:id="@+id/viewpager"
-               android:layout_width="wrap_content"
-               android:layout_height="0dp"
-               android:layout_centerHorizontal="true"
-               android:layout_centerVertical="true"
-               android:layout_weight="3"
-               >
-
-           </androidx.viewpager.widget.ViewPager>
-
-           <me.relex.circleindicator.CircleIndicator
-               android:layout_width="match_parent"
-               android:layout_height="0dp"
-               android:layout_weight="0.4"
-               android:paddingTop="5dp"
-               android:id="@+id/indicator"
-               app:ci_drawable="@drawable/black_radius"
-               app:ci_height="5dp"
-               app:ci_width="5dp"
-               app:ci_margin="4dp">
-           </me.relex.circleindicator.CircleIndicator>
-       </LinearLayout>-->
 
        <LinearLayout
            android:layout_width="match_parent"
@@ -172,21 +162,115 @@
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:gravity="center"
+               android:background="#ffffff"
+               android:orientation="vertical"
                >
-               <ImageView
+
+               <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:scaleType="centerCrop"
-                   android:id="@+id/imageCenter"
+                   android:text="출연/제작"
+                   android:layout_marginLeft="10dp"
+                   android:textSize="18sp"
+                   android:textStyle="bold"
+                   android:textColor="#000000"
                    />
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="10dp"
+                   android:orientation="horizontal"
+                   >
+
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:layout_weight="2"
+                       android:layout_marginLeft="10dp"
+                       android:textStyle="bold"
+                       android:textColor="#000000"
+                       android:text="감독"
+                       android:textSize="18sp"
+                       />
+
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:layout_weight="8"
+                       android:textSize="16sp"
+                       android:textStyle="normal"
+                       android:gravity="center"
+                       android:id="@+id/sub_director"
+                       />
+
+               </LinearLayout>
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="10dp"
+                   android:orientation="horizontal"
+                   >
+
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="2"
+                       android:layout_marginLeft="10dp"
+                       android:textStyle="bold"
+                       android:textColor="#000000"
+                       android:text="배우"
+                       android:textSize="18sp"
+                       />
+
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:layout_weight="8"
+                       android:textSize="16sp"
+                       android:maxLines="1"
+                       android:gravity="center"
+                       android:textStyle="normal"
+                       android:ellipsize="end"
+                       android:id="@+id/sub_actor"
+                       />
+
+               </LinearLayout>
+
            </LinearLayout>
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-           </LinearLayout>
        </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:background="#ffffff"
+           android:orientation="vertical"
+           >
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="10dp"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:textColor="#000000"
+               android:text="갤러리"
+               />
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/sub_posterimage"
+               android:layout_margin="10dp"
+               >
+
+           </androidx.recyclerview.widget.RecyclerView>
+
+       </LinearLayout>
+
    </LinearLayout>
 </ScrollView>
 

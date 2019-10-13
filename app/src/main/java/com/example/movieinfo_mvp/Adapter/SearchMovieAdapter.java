@@ -2,6 +2,7 @@ package com.example.movieinfo_mvp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Network.Model.NaverSearch.Item;
+import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.View.MovieDetailActivity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +45,14 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
     private Context context;
     private List<Item> itemList = null;
     private Item item;
+    private SharedPreferences sf;
+    private Gson gson;
 
     public SearchMovieAdapter(Context context){
         itemList = new ArrayList<>();
         this.context = context;
+        sf = context.getSharedPreferences("Movielike",Context.MODE_PRIVATE);
+        gson = new GsonBuilder().create();
     }
 
     public class MovieSearchHolder extends RecyclerView.ViewHolder {
@@ -120,12 +130,24 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<SearchMovieAdapter.
             }
         });
 
-        /*holder.imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+        String key = sf.getString("like",null);
+        if(key == null){
+            holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            Type listType = new TypeToken<ArrayList<RecyclerViewModel>>() {
+            }.getType();
+            List<RecyclerViewModel> datas = gson.fromJson(key, listType);
+            boolean check = false;
+            for (RecyclerViewModel arrayModel : datas) {
+                if (arrayModel.getMovieNm().equals(name)) {
+                    check = true;
+                    break;
+                }
             }
-        });*/
+            if (!check) holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+            else holder.imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
+        }
+
     }
 
     public void add(Item item){

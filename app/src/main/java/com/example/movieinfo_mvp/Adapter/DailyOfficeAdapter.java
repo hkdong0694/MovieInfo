@@ -22,7 +22,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.View.MovieDetailActivity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,7 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
     private String audi;
     private DecimalFormat decimalFormat = new DecimalFormat("###,###");
     private SharedPreferences sf;
-    private SharedPreferences.Editor editor;
+    private Gson gson = new GsonBuilder().create();
 
     public DailyOfficeAdapter(Context context) {
         this.recyclerViewModels = new ArrayList<>();
@@ -117,11 +121,22 @@ public class DailyOfficeAdapter extends RecyclerView.Adapter<DailyOfficeAdapter.
         audi = recyclerViewModel.getAudiAcc();
         open = open.replace("-","/");
         holder.openDt.setText(open + " 개봉 (" + decimalFormat.format(Integer.parseInt(audi)) + "명)");
-        String key = recyclerViewModel.getMovieNm() + recyclerViewModel.getPubDate()+recyclerViewModel.getDirector();
-        editor = sf.edit();
-        boolean check = sf.getBoolean(key,false);
-        if(!check) holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
-        else holder.imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
+        String key = sf.getString("like",null);
+        if(key == null){
+            holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+        } else {
+            Type listType = new TypeToken<ArrayList<RecyclerViewModel>>() {}.getType();
+            List<RecyclerViewModel> datas = gson.fromJson(key,listType);
+            boolean check = false;
+            for(RecyclerViewModel arrayModel : datas){
+                if(arrayModel.getMovieNm().equals(recyclerViewModel.getMovieNm())){
+                    check = true;
+                    break;
+                }
+            }
+            if(!check) holder.imageButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+            else holder.imageButton.setImageResource(R.drawable.ic_favorite_blacks_24dp);
+        }
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -18,6 +18,7 @@ import com.example.movieinfo_mvp.Network.Model.RecyclerViewModel;
 import com.example.movieinfo_mvp.R;
 import com.example.movieinfo_mvp.View.MovieDetailActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LikeMovieAdpater  extends RecyclerView.Adapter<LikeMovieAdpater.likeHolder> {
@@ -25,9 +26,9 @@ public class LikeMovieAdpater  extends RecyclerView.Adapter<LikeMovieAdpater.lik
     private Context context;
     private List<RecyclerViewModel> recyclerViewModels;
 
-    public LikeMovieAdpater(Context context,List<RecyclerViewModel> recyclerViewModels) {
+    public LikeMovieAdpater(Context context) {
         this.context  = context;
-        this.recyclerViewModels = recyclerViewModels;
+        recyclerViewModels = new ArrayList<>();
     }
 
     public class likeHolder extends RecyclerView.ViewHolder{
@@ -71,5 +72,15 @@ public class LikeMovieAdpater  extends RecyclerView.Adapter<LikeMovieAdpater.lik
     @Override
     public int getItemCount() {
         return recyclerViewModels.size();
+    }
+
+    public void add(RecyclerViewModel recyclerViewModel){
+        recyclerViewModels.add(recyclerViewModel);
+        notifyItemInserted(recyclerViewModels.size()-1);
+    }
+
+    public void clear(){
+        recyclerViewModels.clear();
+        notifyDataSetChanged();
     }
 }

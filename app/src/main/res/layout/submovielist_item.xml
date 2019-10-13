@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textStyle="normal"
             android:textColor="#000000"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:text="애니매이션, 액션, 모험, 코미디 가족, SF"
             android:id="@+id/subcomment"
             />
@@ -43,6 +43,6 @@
         android:layout_gravity="center_horizontal|center_vertical"
         />
 
-    
+
 
 </LinearLayout>

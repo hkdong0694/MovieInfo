@@ -64,6 +64,7 @@ public class SearchMovieFragment extends Fragment implements View.OnClickListene
             @Override
             public void onclick(View v, int pos, ImageButton imageButton) {
                 Log.e("Start",pos + " 번쨰 클릭!");
+
             }
         });
         return view;

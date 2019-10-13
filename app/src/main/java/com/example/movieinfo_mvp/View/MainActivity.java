@@ -4,8 +4,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import com.example.movieinfo_mvp.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         setCustomActionBar();
         time = new Date();
         String time1 = format.format(time);
+        /*SharedPreferences sf = getSharedPreferences("Movielike", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sf.edit();
+        editor.clear();
+        editor.commit();*/
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_calendar));
