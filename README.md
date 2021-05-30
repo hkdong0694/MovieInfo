@@ -8,3 +8,6 @@
 
 ## 1. Java -> Kotlin 변환
 ## 2. MVP Pattern 적용
+
+
+## [MovieInfo_Renewal 바로가기](https://github.com/hkdong0694/MovieInfo_Renewal)
