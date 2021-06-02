@@ -4,7 +4,7 @@
 
 # 2019.10 ~ 2019.12 Java Version
 
-# 2021.05 ~ Renewal Version 만들기
+# 2021.06 ~ Renewal Version 만들기
 
 ## 1. Java -> Kotlin 변환
 ## 2. MVP Pattern 적용
